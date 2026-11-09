@@ -131,6 +131,7 @@ public sealed class ToolRequest
     public bool Wait { get; init; }
     public bool Rollback { get; init; }
     public bool ClearOneShot { get; init; }
+    public bool ClearOldImages { get; init; }
 
     public string Describe()
     {
@@ -143,6 +144,7 @@ public sealed class ToolRequest
         if (Wait) parts.Add("wait");
         if (Rollback) parts.Add("rollback");
         if (ClearOneShot) parts.Add("clear-oneshot");
+        if (ClearOldImages) parts.Add("clear-old-images");
         return parts.Count == 0 ? "diagnose" : string.Join(" ", parts);
     }
 }

@@ -9,5 +9,6 @@
         <SolidColorBrush x:Key="App.Ink" Color="#1E293B"/>
         <SolidColorBrush x:Key="App.Muted" Color="#64748B"/>
         <SolidColorBrush x:Key="App.Accent" Color="#1D4E89"/>
+        <SolidColorBrush x:Key="App.Tonal" Color="#D9E6F5"/>
     </Application.Resources>
 </Application>

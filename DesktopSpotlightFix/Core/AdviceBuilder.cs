@@ -26,19 +26,19 @@ public static class AdviceBuilder
             advice.Add("没能进入 MicrosoftWindows.Client.CBS 的 Global.DesktopSpotlight 身份，无法确认或注册后台任务。"
                 + (string.IsNullOrWhiteSpace(tasks.DesktopError) ? "" : " " + tasks.DesktopError));
         else if (!tasks.HasUpdateTimer)
-            advice.Add("缺少每日拉图任务。请使用「修复缺失任务」，或命令行：DesktopSpotlightFix.exe --repair");
+            advice.Add("缺少每日拉图任务。请使用「一键修复」，或命令行：DesktopSpotlightFix.exe --repair");
         else if (!HealthRules.ShouldSkipOneShot(snapshot, true))
         {
-            advice.Add("任务在，但现有证据还不能说明官方每日拉图是健康的。历史上的 success、单独一份缓存，或手工注入的图，都不能单独算数。请使用「强制安排拉图」，或命令行：DesktopSpotlightFix.exe --force");
+            advice.Add("任务在，但现有证据还不能说明官方每日拉图是健康的。历史上的 success、单独一份缓存，或手工注入的图，都不能单独算数。请使用「强制刷新」，或命令行：DesktopSpotlightFix.exe --force");
             var gate = GateCooldown.GetOpensUtc(snapshot.WallpaperRefresh, snapshot.Rotation, utcNow);
             if (gate.HasValue)
-                advice.Add("若不想等冷却结束，可同时打开冷却门限（--open-gate）。冷却大约到 " + gate.Value.ToLocalTime().ToString("HH:mm") + "。");
+                advice.Add("若不想等冷却结束，可加上 --open-gate。窗口里的「强制刷新」会直接清掉这段等待。冷却大约到 " + gate.Value.ToLocalTime().ToString("HH:mm") + "。");
         }
 
         if (!iris.Reachable)
             advice.Add("当前访问不了微软图库接口 fd.api.iris.microsoft.com。请检查代理、TUN 或防火墙。本工具不会关闭它们。");
         else if (!iris.HasImages)
-            advice.Add("接口能通，但没有返回壁纸内容。可能是地区或内容源暂时没有桌面图。可用「注入备用图」先垫一组图；这不能代替官方每日拉图。");
+            advice.Add("接口能通，但没有返回壁纸内容。可能是地区或内容源暂时没有桌面图。可用「放入备用图」先垫一组图；这不能代替官方每日拉图。");
 
         if (advice.Count == 0)
             advice.Add(HealthyMessage);

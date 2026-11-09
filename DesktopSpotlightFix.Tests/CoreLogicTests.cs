@@ -176,6 +176,7 @@ public class HealthAndAdviceTests
     {
         var advice = AdviceBuilder.Build(HealthySnapshot(), new TaskReport { EnteredDesktopPackage = true, Tasks = [] }, OkIris(), DateTime.UtcNow);
         Assert.Contains(advice, a => a.Contains("--repair", StringComparison.Ordinal));
+        Assert.Contains(advice, a => a.Contains("一键修复", StringComparison.Ordinal));
     }
 
     [Fact]

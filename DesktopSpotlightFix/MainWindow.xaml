@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:core="clr-namespace:DesktopSpotlightFix.Core"
         Title="桌面聚焦修复"
-        Width="980"
-        Height="760"
-        MinWidth="860"
-        MinHeight="640"
+        Width="880"
+        Height="780"
+        MinWidth="760"
+        MinHeight="620"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True"
         WindowStartupLocation="CenterScreen"
@@ -16,60 +16,123 @@
         Foreground="{StaticResource App.Ink}">
     <Window.Resources>
         <Style TargetType="Button">
-            <Setter Property="MinWidth" Value="112"/>
-            <Setter Property="Height" Value="34"/>
+            <Setter Property="MinWidth" Value="96"/>
+            <Setter Property="Height" Value="40"/>
             <Setter Property="Margin" Value="0,0,8,8"/>
-            <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Background" Value="{StaticResource App.Tonal}"/>
+            <Setter Property="Foreground" Value="{StaticResource App.Accent}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="Root" UseLayoutRounding="True" SnapsToDevicePixels="True">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="20" SnapsToDevicePixels="True"/>
+                            <Border x:Name="State"
+                                    Background="{TemplateBinding Foreground}"
+                                    CornerRadius="20"
+                                    Opacity="0"
+                                    IsHitTestVisible="False"/>
+                            <Border x:Name="Ring"
+                                    Margin="-3"
+                                    BorderBrush="{StaticResource App.Accent}"
+                                    BorderThickness="2"
+                                    CornerRadius="23"
+                                    Opacity="0"
+                                    IsHitTestVisible="False"
+                                    SnapsToDevicePixels="True"/>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="State" Property="Opacity" Value="0.08"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="State" Property="Opacity" Value="0.12"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Ring" Property="Opacity" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.38"/>
+                                <Setter TargetName="State" Property="Opacity" Value="0"/>
+                                <Setter TargetName="Ring" Property="Opacity" Value="0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Cursor" Value="Arrow"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Background" Value="{StaticResource App.Accent}"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource App.Accent}"/>
         </Style>
     </Window.Resources>
-    <Grid Margin="20">
+    <Grid Margin="20,16,20,16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="140"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Row="0" LastChildFill="True">
-            <TextBlock x:Name="StatusText" DockPanel.Dock="Right" Foreground="{StaticResource App.Muted}" VerticalAlignment="Bottom" Margin="12,0,0,0"/>
-            <StackPanel>
-                <TextBlock Text="桌面聚焦修复" FontSize="22" FontWeight="SemiBold"/>
-                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource App.Muted}" Margin="0,4,0,0"
-                           Text="修复 Windows 11 桌面「Windows 聚焦」只在几张旧图里循环的问题。修完即退出，不安装、不常驻。"/>
-            </StackPanel>
+            <TextBlock x:Name="StatusText" DockPanel.Dock="Right" Text="正在检查" Foreground="{StaticResource App.Muted}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource App.Muted}" VerticalAlignment="Center"
+                       Text="检查 Windows 聚焦为什么不换新图。用完即走，不安装、不常驻。"/>
         </DockPanel>
 
-        <Border Grid.Row="1" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,14,0,12">
-            <TextBlock TextWrapping="Wrap"
-                       Text="安排成功只表示系统任务已登记，大约 15–30 分钟后才可能拉图，不表示壁纸已经换好。备用图只是权宜之计，官方每日拉取仍应修好。"/>
+        <Border x:Name="VerdictCard" Grid.Row="1" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="12,8" Margin="0,10,0,0">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <Button x:Name="PrimaryButton" Content="一键修复" Style="{StaticResource AccentButton}" Visibility="Collapsed" Margin="0,0,8,0" Click="Primary_Click"/>
+                    <Button x:Name="RecheckButton" Content="重新检查" Margin="0" MinWidth="96" Click="Recheck_Click"/>
+                </StackPanel>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="VerdictTitle" Text="正在检查" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B"/>
+                    <TextBlock x:Name="VerdictBody" Text="看完会直接告诉你要不要修复。" TextWrapping="Wrap" Margin="0,2,0,0" FontSize="13" Foreground="{StaticResource App.Ink}"/>
+                </StackPanel>
+            </DockPanel>
         </Border>
 
-        <Border Grid.Row="2" Background="{StaticResource App.Card}" BorderBrush="{StaticResource App.Line}" BorderThickness="1" CornerRadius="8" Padding="12">
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="体检结果" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Border Grid.Row="2" Background="{StaticResource App.Card}" BorderBrush="{StaticResource App.Line}" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,12,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Margin="2,0,0,6">
+                    <Run Text="检查明细" FontWeight="SemiBold"/>
+                    <Run Text="    要不要修复，看上面的结论" Foreground="{StaticResource App.Muted}" FontSize="12"/>
+                </TextBlock>
+                <ScrollViewer x:Name="FindingsScroller" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl x:Name="FindingsList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type core:Finding}">
-                                <StackPanel Margin="0,2,0,6">
-                                    <TextBlock Text="{Binding Section}" FontWeight="SemiBold" Margin="0,8,0,4">
+                                <StackPanel Margin="2,0,8,2">
+                                    <TextBlock Text="{Binding Section}" FontWeight="SemiBold" FontSize="12" Foreground="{StaticResource App.Muted}" Margin="0,4,0,1">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Section}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Section}" Value="">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -78,11 +141,11 @@
                                     </TextBlock>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="52"/>
-                                            <ColumnDefinition Width="148"/>
+                                            <ColumnDefinition Width="44"/>
+                                            <ColumnDefinition Width="132"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding LevelText}" FontWeight="SemiBold">
+                                        <TextBlock Text="{Binding LevelText}" FontWeight="SemiBold" FontSize="13">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Foreground" Value="#475569"/>
@@ -100,45 +163,41 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                        <TextBlock Grid.Column="1" Text="{Binding Label}" TextWrapping="Wrap" Margin="0,0,8,0"/>
-                                        <TextBlock Grid.Column="2" Text="{Binding Detail}" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Label}" FontSize="13" TextWrapping="Wrap" Margin="0,0,8,0"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Detail}" FontSize="13" Foreground="#334155" TextWrapping="Wrap"/>
                                     </Grid>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-            </DockPanel>
+                <TextBlock x:Name="FindingsPlaceholder" Grid.Row="1" Text="正在读取系统状态…" Foreground="{StaticResource App.Muted}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,12"/>
+            </Grid>
         </Border>
 
-        <TextBlock Grid.Row="3" Text="建议" FontWeight="SemiBold" Margin="2,12,0,6"/>
-        <TextBox x:Name="AdviceBox" Grid.Row="4" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
-                 VerticalScrollBarVisibility="Auto" BorderBrush="{StaticResource App.Line}" Padding="10"/>
-
-        <StackPanel Grid.Row="5" Margin="0,12,0,0">
-            <StackPanel Orientation="Horizontal">
-                <CheckBox x:Name="OpenGateCheck" Content="同时打开冷却门限" VerticalAlignment="Center" Margin="0,0,18,8"/>
-                <CheckBox x:Name="WaitCheck" Content="安排后等待观察（最多约 35 分钟）" VerticalAlignment="Center" Margin="0,0,0,8"/>
-            </StackPanel>
-            <WrapPanel>
-                <Button x:Name="DiagnoseButton" Content="开始体检" Style="{StaticResource AccentButton}" Click="Diagnose_Click"/>
-                <Button x:Name="RepairButton" Content="修复缺失任务" Click="Repair_Click"/>
-                <Button x:Name="ForceButton" Content="强制安排拉图" Click="Force_Click"/>
-                <Button x:Name="GateButton" Content="打开冷却门限" Click="Gate_Click"/>
-                <Button x:Name="InjectButton" Content="注入备用图" Click="Inject_Click"/>
-                <Button x:Name="RollbackButton" Content="回滚最近备份" Click="Rollback_Click"/>
-                <Button x:Name="ClearButton" Content="清理单次任务" Click="Clear_Click"/>
-            </WrapPanel>
-        </StackPanel>
-
-        <TextBox x:Name="LogBox" Grid.Row="6" Margin="0,4,0,8" IsReadOnly="True" TextWrapping="Wrap"
-                 VerticalScrollBarVisibility="Auto" FontFamily="Consolas, Microsoft YaHei UI" FontSize="12"
-                 BorderBrush="{StaticResource App.Line}" Padding="8"/>
-
-        <DockPanel Grid.Row="7">
-            <Button DockPanel.Dock="Right" Content="复制摘要" Click="Copy_Click" MinWidth="88"/>
-            <Button DockPanel.Dock="Right" Content="打开日志目录" Click="OpenLog_Click" MinWidth="112"/>
-            <TextBlock x:Name="LogPathText" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{StaticResource App.Muted}"/>
-        </DockPanel>
+        <Grid Grid.Row="3" Margin="2,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Row="0" LastChildFill="True">
+                <CheckBox x:Name="ShowLogCheck" DockPanel.Dock="Right" Content="打开日志" VerticalAlignment="Center" Margin="12,0,0,0" Checked="ShowLog_Changed" Unchecked="ShowLog_Changed"/>
+                <WrapPanel>
+                    <Button x:Name="ForceButton" Content="强制刷新" Style="{StaticResource AccentButton}" Margin="0,0,8,0" Click="Force_Click"/>
+                    <Button x:Name="InjectButton" Content="放入备用图" Margin="0,0,8,0" Click="Inject_Click"/>
+                    <Button x:Name="ClearOldButton" Content="移除旧图" Margin="0" Click="ClearOld_Click"/>
+                </WrapPanel>
+            </DockPanel>
+            <DockPanel x:Name="LogPanel" Grid.Row="1" Visibility="Collapsed" Margin="0,8,0,0" LastChildFill="True">
+                <DockPanel DockPanel.Dock="Bottom" Margin="0,8,0,0" LastChildFill="True">
+                    <Button DockPanel.Dock="Right" Content="复制摘要" Click="Copy_Click" MinWidth="88" Margin="8,0,0,0"/>
+                    <Button DockPanel.Dock="Right" Content="打开日志目录" Click="OpenLog_Click" MinWidth="112" Margin="8,0,0,0"/>
+                    <TextBlock x:Name="LogPathText" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource App.Muted}"/>
+                </DockPanel>
+                <TextBox x:Name="LogBox" Height="120" IsReadOnly="True" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" FontFamily="Consolas, Microsoft YaHei UI" FontSize="12"
+                         BorderBrush="{StaticResource App.Line}" Padding="8"/>
+            </DockPanel>
+        </Grid>
     </Grid>
 </Window>

@@ -9,7 +9,7 @@ Windows 11 桌面「Windows 聚焦」如果只在几张很旧的系统底图之�
 - 面向 **Windows 11**。依赖本机已经有 `MicrosoftWindows.Client.CBS`，以及 Windows PowerShell 5.1 里的 `Invoke-CommandInDesktopPackage`（通常随系统 Appx 模块提供）。
 - 其他 Windows 版本没有验证。
 - 包身份和「管理员」是两回事。主路径不需要提权。
-- 只提供 **win-x64** 自包含单文件。没有在 ARM64 上构建或实测，不能当成一个 exe 覆盖所有架构。
+- 发布目标是 **win-x64**。可以打成依赖本机 .NET 桌面运行时的单文件，也可以打成自包含单文件。没有在 ARM64 上构建或实测，不能当成一个 exe 覆盖所有架构。
 - WPF 不能用 NativeAOT。发布没有设置 `PublishAot`。
 
 自包含单文件第一次运行时，.NET 可能会在本机解出原生库缓存。那不是常驻程序，本工具也不会在运行时删除这块共享缓存。
@@ -58,20 +58,13 @@ DesktopSpotlightFix.exe --log C:\path\run.log --redact
 
 ## 发布
 
-在仓库根目录：
+在仓库根目录用 PowerShell 整行粘贴。不要用 `^` 换行，PowerShell 会把 `^` 当成参数，后面的 `-c`、`-r` 也会被拆成新命令：
 
-```bat
-dotnet publish DesktopSpotlightFix\DesktopSpotlightFix.csproj ^
-  -c Release ^
-  -r win-x64 ^
-  --self-contained true ^
-  -p:PublishSingleFile=true ^
-  -p:IncludeNativeLibrariesForSelfExtract=true ^
-  -p:EnableCompressionInSingleFile=true ^
-  -o dist\win-x64
+```bash
+dotnet publish DesktopSpotlightFix\DesktopSpotlightFix.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o dist
 ```
 
-产物是 `dist\win-x64\DesktopSpotlightFix.exe`。目标框架是 `net10.0-windows`。
+产物是 `dist\DesktopSpotlightFix.exe`。这是非自包含单文件，目标框架是 `net10.0-windows`，运行机器需要已安装 .NET 10 桌面运行时。`IncludeNativeLibrariesForSelfExtract` 把 Lottie / Skia 的本机库打进同一个 exe。
 
 ## 日志、备份、临时文件
 

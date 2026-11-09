@@ -12,6 +12,7 @@ public sealed class ProgramArgs
     public bool Wait { get; private set; }
     public bool Rollback { get; private set; }
     public bool ClearOneShot { get; private set; }
+    public bool ClearOldImages { get; private set; }
     public bool Redact { get; private set; }
     public bool Help { get; private set; }
     public string? LogPath { get; private set; }
@@ -28,19 +29,21 @@ public sealed class ProgramArgs
         !Wait &&
         !Rollback &&
         !ClearOneShot &&
+        !ClearOldImages &&
         LogPath == null &&
         !Redact;
 
     public Core.ToolRequest ToRequest() => new()
     {
-        Diagnose = Diagnose || (!Repair && !Force && !InjectFallback && !OpenGate && !Rollback && !ClearOneShot),
+        Diagnose = Diagnose || (!Repair && !Force && !InjectFallback && !OpenGate && !Rollback && !ClearOneShot && !ClearOldImages),
         Repair = Repair,
         Force = Force,
         OpenGate = OpenGate,
         InjectFallback = InjectFallback,
         Wait = Wait,
         Rollback = Rollback,
-        ClearOneShot = ClearOneShot
+        ClearOneShot = ClearOneShot,
+        ClearOldImages = ClearOldImages
     };
 
     public static ProgramArgs Parse(string[] args)
@@ -75,6 +78,9 @@ public sealed class ProgramArgs
                     break;
                 case "--clear-oneshot":
                     result.ClearOneShot = true;
+                    break;
+                case "--clear-old-images":
+                    result.ClearOldImages = true;
                     break;
                 case "--redact":
                     result.Redact = true;
@@ -115,6 +121,7 @@ public sealed class ProgramArgs
         --wait              安排后最多观察约 35 分钟
         --rollback          只回滚本工具最近一次备份写下的项；发现冲突则中止
         --clear-oneshot     只注销 DesktopSpotlight.BackgroundTask.UpdateTimer.oneshot
+        --clear-old-images  删除超过 30 天、且不在「下一个背景」清单里的旧图。正在显示的壁纸不动
         --log <文件>        指定日志文件
         --redact            日志里隐藏机器名和用户名
         --help              显示本说明
