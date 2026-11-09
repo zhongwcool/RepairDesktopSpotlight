@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>DesktopSpotlightFix</AssemblyName>
+    <RootNamespace>DesktopSpotlightFix</RootNamespace>
+    <Version>1.0.0</Version>
+    <Product>桌面聚焦修复</Product>
+    <Description>修复 Windows 11 桌面 Windows 聚焦不拉取新图。</Description>
+    <LangVersion>latest</LangVersion>
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
+</Project>

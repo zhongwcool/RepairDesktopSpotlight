@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DesktopSpotlightFix/DesktopSpotlightFix.csproj" />
+  <Project Path="DesktopSpotlightFix.Tests/DesktopSpotlightFix.Tests.csproj" />
+</Solution>
